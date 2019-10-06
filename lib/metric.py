@@ -17,7 +17,7 @@ def probas2scores(events, probas):
     scores = [p[labels[e]] for e, p in zip(events, probas)]
     
     for i, e in enumerate(events):
-        if e in ['view', 'dislike']:
+        if e in ['skip', 'dislike']:
             scores[i] *= -1
     
     return scores
