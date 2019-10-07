@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def competition_metric(events, scores):
     weights = {
         'dislike': -10,
@@ -21,4 +22,17 @@ def probas2scores(events, probas):
             scores[i] *= -1
     
     return scores
+
+
+def probas2scores_xgb(labels, probas):
+    mapping = {
+        'dislike': [0, -1],
+        'like': [1, 1],
+        'skip': [2, -1],
+        'view': [3, 1]
+    }
     
+    scores = []
+    for i in range(len(probas)):
+        scores.append(probas[i][mapping[labels[i]][0]] * mapping[labels[i]][1])
+    return scores
