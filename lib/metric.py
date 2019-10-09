@@ -31,8 +31,29 @@ def probas2scores_xgb(labels, probas):
         'skip': [2, -1],
         'view': [3, 1]
     }
-    
+
     scores = []
     for i in range(len(probas)):
         scores.append(probas[i][mapping[labels[i]][0]] * mapping[labels[i]][1])
     return scores
+
+
+def extract_date_features(date):
+    """
+
+    :param date: datetime formate
+    :return:  some useful features, you can understand them by their names
+    """
+
+    weekday = [0] * 7
+    weekday[date.weekday()] = 1
+
+    is_holiday = 0
+    if date.weekday() == 5 or date.weekday() == 6:
+        is_holiday = 1
+
+    is_work_time = 0
+    if 9 < date.hour < 18:
+        is_work_time = 1
+
+    return weekday + [is_holiday] + [is_work_time]
