@@ -46,7 +46,11 @@ def extract_date_info(date):
         is_weekend = 1
 
     is_working_time = 0
-    if 9 < date.hour < 18:
+    if 9 < date.hour < 18 and not is_weekend:
         is_working_time = 1
 
-    return week_day + [is_weekend] + [is_working_time]
+    is_daytime = 0
+    if 7 < date.hour < 23:
+        is_daytime = 1
+
+    return week_day + [is_weekend] + [is_working_time] + [is_daytime]
