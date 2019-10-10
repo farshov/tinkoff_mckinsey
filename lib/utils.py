@@ -1,6 +1,13 @@
-import string
 import re
+import string
+import pickle
+
+import tqdm
+
 from datetime import datetime
+
+import pandas as pd
+
 
 def clean_sentence(s):
     # symb = "!@#%*&()[]{}/?²\"\'#№.,:;%*()<>\n₽1234567890-+–«»\"\\qwertyuiopasdfghjklzxcvbnm"
@@ -49,8 +56,23 @@ def extract_date_info(date):
     if 9 < date.hour < 18 and not is_weekend:
         is_working_time = 1
 
+<<<<<<< HEAD
     is_daytime = 0
     if 7 < date.hour < 23:
         is_daytime = 1
 
     return week_day + [is_weekend] + [is_working_time] + [is_daytime]
+=======
+    return week_day + [is_weekend] + [is_working_time]
+
+
+def embedings2df(path):
+    with open(path, 'rb') as es:
+        embedded_stories = pickle.load(es)
+    
+    records = dict()
+    for key in tqdm.tqdm(embedded_stories.keys()):
+        records[key] = embedded_stories[key]['emb']
+        
+    return pd.DataFrame.from_dict(records, orient='index')
+>>>>>>> 7687428f954fe256f73642dc068e0b2b20486598
