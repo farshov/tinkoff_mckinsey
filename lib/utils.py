@@ -4,6 +4,12 @@ import pickle
 
 import tqdm
 
+import PIL
+import requests
+from io import BytesIO
+
+import torchvision
+
 from datetime import datetime
 
 import pandas as pd
@@ -72,3 +78,29 @@ def embedings2df(path):
         records[key] = embedded_stories[key]['emb']
         
     return pd.DataFrame.from_dict(records, orient='index')
+
+
+def features_extractor(url_stories, model, device=None):
+    features = dict()
+    
+    for story_id in tqdm.tqdm(list(url_stories.keys())):
+        features[story_id] = []
+        
+        urls = url_stories[story_id]
+
+        for url in tqdm.tqdm(urls):
+            response = requests.get(url)
+            image = PIL.Image.open(BytesIO(response.content))
+
+            image = torchvision.transforms.ToTensor()(image.convert("RGB"))
+            image = image.unsqueeze(0)
+
+            if device == 'cuda':
+                model.to(device)
+            
+            output = model.forward(image)
+            output = output.squeeze(0).detach().numpy()
+
+            features[story_id].append(output)
+        
+    return features  
